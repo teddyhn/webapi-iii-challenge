@@ -68,8 +68,17 @@ router.delete('/:id', validateUserId, (req, res) => {
         });
 });
 
-router.put('/:id', (req, res) => {
-
+router.put('/:id', [ validateUserId, validateUser ], (req, res) => {
+    Users.update(req.params.id, req.body)
+        .then(count => {
+            if (count > 0) {
+                res.status(200).json({ message: "user successfully updated" })
+            } else res.status(404).json({ message: "user could not be found" })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ message: "error updating the user" })
+        });
 });
 
 //custom middleware
